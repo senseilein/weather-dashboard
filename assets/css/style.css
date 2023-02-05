@@ -1,0 +1,14 @@
+aside {
+    border: 3px solid red;
+}
+#history {
+    border: 3px dashed yellow;
+}
+
+#today {
+    border: 3px dotted skyblue;
+}
+
+#forecast {
+    border: 3px dotted green;
+}
