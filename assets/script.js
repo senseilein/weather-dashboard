@@ -6,11 +6,29 @@ const submitBtn = $("#search-button");
 
 // *-------------------- FUNCTIONS TO MODIFY DOCUMENT ELEMENTS --------------------* //
 
+function getTodaysdate() {
+  let today = moment().format("DD/M/YYYY");
+  console.log({ today });
+  return today;
+}
+
+function getWeatherIcon(city) {
+  console.log(city.weather[0].icon);
+  const iconCode = city.weather[0].icon;
+  const imgURL = `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
+  return imgURL;
+}
+
 /**
- * Extract data from response object (called city) and create elements to populate todaySection accordingly
+ * * Extract data from response object (called city) and create elements to populate todaySection accordingly
  * @param {object} city collected from API call initiated when input submit button is fired
  */
 function displayTodayWeather(city) {
+  const todaySection = $("#today");
+
+  //Make sure the requested data are only displayed once
+  todaySection.empty();
+
   console.log("temp " + city.main.temp + "*C");
   console.log("humidity " + city.main.humidity + "%");
   console.log("Wind " + city.wind.speed + "KPH");
@@ -20,9 +38,12 @@ function displayTodayWeather(city) {
 
   const searchInput = $("#search-input").val().trim();
 
-  const todaySection = $("#today");
-  const todayHeading = $("<h2>").text(searchInput);
+  const todayHeading = $("<h2>").text(`${searchInput} (${getTodaysdate()})`);
   todayHeading.addClass("h2-heading");
+
+  const weatherIcon = $("<img>");
+  weatherIcon.attr("src", getWeatherIcon(city));
+  todayHeading.append(weatherIcon);
 
   const todayTemp = $("<p>").text(`Temp: ${city.main.temp}°C`);
   const todayHumidity = $("<p>").text(`Humidity: ${city.main.humidity}%`);
@@ -83,6 +104,20 @@ function buildTodayWeatherQueryURL(currentCityCoordinates) {
   return todayWeatherQueryURL;
 }
 
+// *-------------------- FUNCTIONS TO CALL 5DAYS FORECAST API --------------------* //
+
+function buildFiveDaysForecastQueryURL(currentCityCoordinates) {
+  //we're sending the response as currentCityCoordinates
+
+  // get latitude & longitude from response object
+  let lat = currentCityCoordinates.lat;
+  let lon = currentCityCoordinates.lon;
+
+  let fiveDaysForecastQueryURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+  console.log(fiveDaysForecastQueryURL);
+  return fiveDaysForecastQueryURL;
+}
+
 // *-------------------- API CALLS --------------------* //
 // ! TODO: Improve - if failed then inform user accordingly
 /**
@@ -101,6 +136,9 @@ function getCityWeather() {
     .then(function (response) {
       // get the lat&lon from response obj in order to build URL to call 2nd API to get today's weather
       let todayWeatherQueryURL = buildTodayWeatherQueryURL(response[0]);
+
+      // get the lat&lon from response obj in order to build URL to call 5 days forecast API
+      let fiveDaysForecastQueryURL = buildFiveDaysForecastQueryURL(response[0]);
 
       // call api using currentWeatherQueryURL
       $.ajax({
