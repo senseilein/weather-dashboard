@@ -52,4 +52,8 @@ aside {
     color: black;
     border-radius: 0.6rem;
     font-size: 1.5rem;
+
+    /* TODO: should be dynamically added in createCityBtn() */
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
