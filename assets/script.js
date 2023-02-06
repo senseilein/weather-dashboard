@@ -15,15 +15,17 @@ const submitBtn = $("#search-button");
  * * Create a button with user input text and
  * * Append it to the #history section (inside the aside)#
  */
-
 function createCityBtn() {
   const searchInput = $("#search-input").val().trim();
   const cityBtn = $("<button>");
-  cityBtn.addClass("btn city-button");
+  cityBtn.addClass("btn, city-button");
   cityBtn.text(searchInput);
   history.append(cityBtn);
 }
 
+/**
+ * @return {string} geocodingQueryURL that will be used to call the API to retrieve lat&lon based on cityName
+ */
 function buildGeocodingQueryURL() {
   // get user input and store it in cityName
   const cityName = $("#search-input").val().trim();
@@ -36,6 +38,9 @@ function buildGeocodingQueryURL() {
 
 // *-------------------- FUNCTIONS TO CALL CURRENT WEATHER API --------------------* //
 
+/**
+ * @return {string} currentWeatherQueryURL that will be used to call the current day weather API
+ */
 function buildCurrentWeatherQueryURL(currentCityCoordinates) {
   //we're sending the response as currentCityCoordinates
 
@@ -46,7 +51,7 @@ function buildCurrentWeatherQueryURL(currentCityCoordinates) {
   console.log({ lat });
   console.log({ lon });
 
-  let currentWeatherQueryURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+  let currentWeatherQueryURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
   console.log(currentWeatherQueryURL);
   return currentWeatherQueryURL;
 }
@@ -71,7 +76,12 @@ function getCityWeather() {
       let currentWeatherQueryURL = buildCurrentWeatherQueryURL(response[0]);
 
       // call api using currentWeatherQueryURL
-      //add code here
+      $.ajax({
+        url: currentWeatherQueryURL,
+        method: "GET",
+      }).then(function (city) {
+        console.log(city);
+      });
     })
     .catch(function (error) {
       console.log("ERROR", error);
