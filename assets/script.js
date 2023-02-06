@@ -4,6 +4,33 @@ const submitBtn = $("#search-button");
 
 /* -------------------- FUNCTIONS -------------------- */
 
+// *-------------------- FUNCTIONS TO MODIFY DOCUMENT ELEMENTS --------------------* //
+
+/**
+ * Extract data from response object (called city) and create elements to populate todaySection accordingly
+ * @param {object} city collected from API call initiated when input submit button is fired
+ */
+function displayTodayWeather(city) {
+  console.log("temp " + city.main.temp + "*C");
+  console.log("humidity " + city.main.humidity + "%");
+  console.log("Wind " + city.wind.speed + "KPH");
+  // const todayTemp = city.main.temp + "°C";
+  // const todayHumidity = city.main.humidity + "%";
+  // const todayWind = city.wind.speed + "KPH";
+
+  const searchInput = $("#search-input").val().trim();
+
+  const todaySection = $("#today");
+  const todayHeading = $("<h2>").text(searchInput);
+  todayHeading.addClass("h2-heading");
+
+  const todayTemp = $("<p>").text(`Temp: ${city.main.temp}°C`);
+  const todayHumidity = $("<p>").text(`Humidity: ${city.main.humidity}%`);
+  const todayWind = $("<p>").text(`Wind: ${city.wind.speed} KPH`);
+
+  todaySection.append(todayHeading, todayTemp, todayHumidity, todayWind);
+}
+
 // *-------------------- FUNCTIONS TO CALL GEOCODING API --------------------* //
 
 // ! TODO: Add defense, only create a button for valid city,
@@ -41,7 +68,7 @@ function buildGeocodingQueryURL() {
 /**
  * @return {string} currentWeatherQueryURL that will be used to call the current day weather API
  */
-function buildCurrentWeatherQueryURL(currentCityCoordinates) {
+function buildTodayWeatherQueryURL(currentCityCoordinates) {
   //we're sending the response as currentCityCoordinates
 
   // get latitude & longitude from response object
@@ -51,9 +78,9 @@ function buildCurrentWeatherQueryURL(currentCityCoordinates) {
   console.log({ lat });
   console.log({ lon });
 
-  let currentWeatherQueryURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-  console.log(currentWeatherQueryURL);
-  return currentWeatherQueryURL;
+  let todayWeatherQueryURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+  console.log(todayWeatherQueryURL);
+  return todayWeatherQueryURL;
 }
 
 // *-------------------- API CALLS --------------------* //
@@ -72,15 +99,16 @@ function getCityWeather() {
     method: "GET",
   })
     .then(function (response) {
-      // get the lat&lon from response obj in order to build URL to call 2nd API to get current day weather
-      let currentWeatherQueryURL = buildCurrentWeatherQueryURL(response[0]);
+      // get the lat&lon from response obj in order to build URL to call 2nd API to get today's weather
+      let todayWeatherQueryURL = buildTodayWeatherQueryURL(response[0]);
 
       // call api using currentWeatherQueryURL
       $.ajax({
-        url: currentWeatherQueryURL,
+        url: todayWeatherQueryURL,
         method: "GET",
       }).then(function (city) {
         console.log(city);
+        displayTodayWeather(city);
       });
     })
     .catch(function (error) {
@@ -90,9 +118,6 @@ function getCityWeather() {
       );
       return;
     });
-
-  // console.log(cityCoordinates);
-  // return cityCoordinates;
 }
 
 // *-------------------- EVENT HANDLERS --------------------* //

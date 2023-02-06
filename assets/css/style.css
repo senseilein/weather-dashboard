@@ -59,3 +59,14 @@ aside {
     padding-top: 1rem;
     padding-bottom: 3.5rem;
 }
+
+/*Today's Section*/
+/*this can be replaced with a JS function*/
+button::first-letter, h2::first-letter {
+    text-transform:capitalize;
+}
+
+#today>p {
+    font-size: 1.5rem;   
+}
+
