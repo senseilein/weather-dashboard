@@ -6,6 +6,10 @@ const submitBtn = $("#search-button");
 // !needs to be accessible from all the different functions used for that particular API
 let cityCoordinates = [];
 
+/* -------------------- FUNCTIONS -------------------- */
+
+// *-------------------- FUNCTIONS TO CALL GEOCODING API --------------------* //
+
 // ! TODO: Add defense, only create a button for valid city,
 // i.e. the ones that have retrievable coordinates
 // if input empty inform user accordingly and do nothing
@@ -52,7 +56,7 @@ function collectCityCoordinates(response) {
 /**
  * * Call the Geocoding API and
  * * Collect the lat-lon coordinates of the user input city
- * @returns true for now // will modif later with IF statement depending on API response
+ * ? @returns cityCoordinates or false?  // will dvp & modif later with IF statement depending on API response
  */
 function getCityCoordinates() {
   const queryURL = buildGeocodingQueryURL();
@@ -70,15 +74,42 @@ function getCityCoordinates() {
   // });
 
   console.log(cityCoordinates);
-  return true;
+  return cityCoordinates;
 }
 
+// *-------------------- FUNCTIONS TO CALL CURRENT WEATHER API --------------------* //
+
+function buildCurrentWeatherQueryURL(currentCityCoordinates) {
+  console.log("at the moment we have the following coordinates");
+  console.log(currentCityCoordinates);
+
+  // split coordinates array into 2 variables `lat` & `lon`
+  lat = currentCityCoordinates[0];
+  lon = currentCityCoordinates[1];
+
+  console.log("latitude :" + lat);
+  console.log({ lon });
+
+  let currentWeatherQueryURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+  console.log(currentWeatherQueryURL);
+  return currentWeatherQueryURL;
+}
+
+// *-------------------- EVENT HANDLERS --------------------* //
 // Event delegation - Handle form submission with submit button
 form.on("submit", submitBtn, function (event) {
   event.preventDefault();
 
   createCityBtn();
+
   //Make inputed city coordinates available in this scope by storing funtion in the variable
   let currentCityCoordinates = getCityCoordinates();
+  console.log("SOO");
   console.log(currentCityCoordinates);
+
+  const currentWeatherQueryURL = buildCurrentWeatherQueryURL(
+    currentCityCoordinates
+  );
+  console.log(currentWeatherQueryURL);
+  console.log("done for now");
 });
