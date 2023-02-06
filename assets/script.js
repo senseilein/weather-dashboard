@@ -2,10 +2,6 @@ const history = $("#history");
 const form = $("#search-form");
 const submitBtn = $("#search-button");
 
-//Array created to store lat and lon extracted from Geocoding API response
-// !needs to be accessible from all the different functions used for that particular API
-let cityCoordinates = [];
-
 /* -------------------- FUNCTIONS -------------------- */
 
 // *-------------------- FUNCTIONS TO CALL GEOCODING API --------------------* //
@@ -23,7 +19,7 @@ let cityCoordinates = [];
 function createCityBtn() {
   const searchInput = $("#search-input").val().trim();
   const cityBtn = $("<button>");
-  cityBtn.addClass("btn, city-button");
+  cityBtn.addClass("btn city-button");
   cityBtn.text(searchInput);
   history.append(cityBtn);
 }
@@ -34,65 +30,59 @@ function buildGeocodingQueryURL() {
   console.log("inputed city is " + cityName);
 
   // create query URL(limit to 1 result)
-  let geoQueryURL = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${apiKey}`;
-  return geoQueryURL;
+  let geocodingQueryURL = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${apiKey}`;
+  return geocodingQueryURL;
 }
 
-function collectCityCoordinates(response) {
-  console.log(response);
-  console.log(
-    "From Geocoding response /n lat is " +
-      response[0].lat +
-      "/n lon is " +
-      response[0].lon
-  );
+// *-------------------- FUNCTIONS TO CALL CURRENT WEATHER API --------------------* //
 
-  // collect city latitude and longitude and push it to the cityCoordinates array available globally
-  cityCoordinates.push(response[0].lat);
-  cityCoordinates.push(response[0].lon);
+function buildCurrentWeatherQueryURL(currentCityCoordinates) {
+  //we're sending the response as currentCityCoordinates
+
+  // get latitude & longitude from response object
+  let lat = currentCityCoordinates.lat;
+  let lon = currentCityCoordinates.lon;
+
+  console.log({ lat });
+  console.log({ lon });
+
+  let currentWeatherQueryURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+  console.log(currentWeatherQueryURL);
+  return currentWeatherQueryURL;
 }
 
+// *-------------------- API CALLS --------------------* //
 // ! TODO: Improve - if failed then inform user accordingly
 /**
  * * Call the Geocoding API and
  * * Collect the lat-lon coordinates of the user input city
  * ? @returns cityCoordinates or false?  // will dvp & modif later with IF statement depending on API response
  */
-function getCityCoordinates() {
-  const queryURL = buildGeocodingQueryURL();
+function getCityWeather() {
+  const geocodingQueryURL = buildGeocodingQueryURL();
 
   //call Geocoding API to extract city coordinates from the response provided
   $.ajax({
-    url: queryURL,
+    url: geocodingQueryURL,
     method: "GET",
-  }).then(function (response) {
-    return collectCityCoordinates(response);
-  });
-  // .fail(function () {
-  //   console.log("ERROR ERROR");
-  //   return false;
-  // });
+  })
+    .then(function (response) {
+      // get the lat&lon from response obj in order to build URL to call 2nd API to get current day weather
+      let currentWeatherQueryURL = buildCurrentWeatherQueryURL(response[0]);
 
-  console.log(cityCoordinates);
-  return cityCoordinates;
-}
+      // call api using currentWeatherQueryURL
+      //add code here
+    })
+    .catch(function (error) {
+      console.log("ERROR", error);
+      alert(
+        "Sorry, we were not able to retrieve the requested data. Please try again later."
+      );
+      return;
+    });
 
-// *-------------------- FUNCTIONS TO CALL CURRENT WEATHER API --------------------* //
-
-function buildCurrentWeatherQueryURL(currentCityCoordinates) {
-  console.log("at the moment we have the following coordinates");
-  console.log(currentCityCoordinates);
-
-  // split coordinates array into 2 variables `lat` & `lon`
-  lat = currentCityCoordinates[0];
-  lon = currentCityCoordinates[1];
-
-  console.log("latitude :" + lat);
-  console.log({ lon });
-
-  let currentWeatherQueryURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-  console.log(currentWeatherQueryURL);
-  return currentWeatherQueryURL;
+  // console.log(cityCoordinates);
+  // return cityCoordinates;
 }
 
 // *-------------------- EVENT HANDLERS --------------------* //
@@ -102,14 +92,7 @@ form.on("submit", submitBtn, function (event) {
 
   createCityBtn();
 
-  //Make inputed city coordinates available in this scope by storing funtion in the variable
-  let currentCityCoordinates = getCityCoordinates();
-  console.log("SOO");
-  console.log(currentCityCoordinates);
+  getCityWeather();
 
-  const currentWeatherQueryURL = buildCurrentWeatherQueryURL(
-    currentCityCoordinates
-  );
-  console.log(currentWeatherQueryURL);
   console.log("done for now");
 });
