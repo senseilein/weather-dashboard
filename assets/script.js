@@ -26,7 +26,11 @@ function extractDataOfTheDayToPopulatePage(day) {
   console.log(dataOfTheDay);
   return dataOfTheDay;
 }
-
+// function addForecastHeading(){
+//   const wrap = $("#wrap");
+//   const forecastHeading = $("<h2>").text("5-Day Forecast");
+//   forecastHeading.addClass()
+// }
 function createOneDivPerForecastDay(day, dataOfTheDay) {
   const forecastSection = $("#forecast");
 
@@ -40,9 +44,9 @@ function createOneDivPerForecastDay(day, dataOfTheDay) {
   const dayWeatherIcon = $("<img>");
   dayWeatherIcon.attr("src", getWeatherIcon(day));
 
-  const dayTemp = $("<p>").text(`Temp: ${dataOfTheDay[0]}°C`);
-  const dayHumidity = $("<p>").text(`Humidity: ${dataOfTheDay[1]}%`);
-  const dayWind = $("<p>").text(`Wind: ${dataOfTheDay[2]} KPH`);
+  const dayTemp = $("<p>").text(`Temp: ${dataOfTheDay[0]}`);
+  const dayHumidity = $("<p>").text(`Humidity: ${dataOfTheDay[1]}`);
+  const dayWind = $("<p>").text(`Wind: ${dataOfTheDay[2]}`);
 
   dayDiv.append(dayHeading, dayTemp, dayHumidity, dayWind);
   forecastSection.append(dayDiv);
@@ -81,9 +85,11 @@ function displayTodayWeather(day) {
 
 function displayFiveDayWeather(fiveDayForecast) {
   const forecastSection = $("#forecast");
+  const forecastHeading = $("#forecast-heading");
 
   //Make sure the requested data are only displayed once
   forecastSection.empty();
+  forecastHeading.removeClass("hide");
 
   fiveDayForecast.forEach((day) => {
     let dataOfTheDay = extractDataOfTheDayToPopulatePage(day);

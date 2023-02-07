@@ -57,7 +57,7 @@ button::first-letter, h2::first-letter {
 
 .today-style {
     border: 1px solid black;
-    padding: 3rem;
+   
 }
 
 #today > p {
@@ -68,5 +68,17 @@ button::first-letter, h2::first-letter {
 
 #forecast {
     padding: 3rem;
-    border: 1px solid #81b4ed;
+}
+
+/*Forecast*/
+
+.hide{
+    display: none;
+}
+#forecast {
+    border: 2px solid blueviolet;
+}
+
+#forecast-heading{
+    border: 2px solid orange;
 }
