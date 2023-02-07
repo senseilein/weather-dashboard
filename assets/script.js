@@ -13,13 +13,12 @@ function getTodaysDate() {
 }
 
 function getWeatherIcon(day) {
-  console.log(day.weather[0].icon);
   const iconCode = day.weather[0].icon;
   const imgURL = `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
   return imgURL;
 }
 
-function extractDataToPopulatePage(day) {
+function extractDataOfTheDayToPopulatePage(day) {
   let dataOfTheDay = [];
   dataOfTheDay.push(`Temp: ${day.main.temp}°C`);
   dataOfTheDay.push(`Humidity: ${day.main.humidity}%`);
@@ -108,7 +107,6 @@ function buildTodayWeatherQueryURL(currentCityCoordinates) {
   console.log({ lon });
   // ! ADD more checks to protect your code
   let todayWeatherQueryURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-  console.log(todayWeatherQueryURL);
   return todayWeatherQueryURL;
 }
 
@@ -122,8 +120,27 @@ function buildFiveDaysForecastQueryURL(currentCityCoordinates) {
   let lon = currentCityCoordinates.lon;
 
   let fiveDaysForecastQueryURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-  console.log(fiveDaysForecastQueryURL);
   return fiveDaysForecastQueryURL;
+}
+
+/**
+ * @param {*} forecastList
+ * @returns [fiveDayData] array of data for next 5 days
+ */
+function getFiveDaysForecast(forecastList) {
+  console.log(forecastList);
+  let fiveDayData = [];
+  for (let data = 0; data < forecastList.length - 1; data += 7) {
+    if (data === 0) {
+      continue;
+    }
+    fiveDayData.push(forecastList[data]);
+  }
+
+  console.log("final");
+  console.log(fiveDayData);
+  console.log(fiveDayData[0]);
+  return fiveDayData;
 }
 
 // *-------------------- API CALLS --------------------* //
@@ -135,8 +152,9 @@ function buildFiveDaysForecastQueryURL(currentCityCoordinates) {
  */
 function getCityWeather() {
   const geocodingQueryURL = buildGeocodingQueryURL();
+  console.log("GEOCODING API \n" + geocodingQueryURL);
 
-  //call Geocoding API to extract day coordinates from the response provided
+  //call Geocoding API to extract city coordinates from the response provided
   $.ajax({
     url: geocodingQueryURL,
     method: "GET",
@@ -144,6 +162,7 @@ function getCityWeather() {
     .then(function (response) {
       // get the lat&lon from response obj in order to build URL to call 2nd API to get today's weather
       let todayWeatherQueryURL = buildTodayWeatherQueryURL(response[0]);
+      console.log("WEATHER API CALL \n" + todayWeatherQueryURL);
 
       // get the lat&lon from response obj in order to build URL to call 5 days forecast API
       let nextQueryURL = buildFiveDaysForecastQueryURL(response[0]);
@@ -153,11 +172,19 @@ function getCityWeather() {
         url: todayWeatherQueryURL,
         method: "GET",
       }).then(function (day) {
-        console.log(day);
-        extractDataToPopulatePage(day);
+        extractDataOfTheDayToPopulatePage(day);
         displayTodayWeather(day);
         let fiveDaysForecastQueryURL = nextQueryURL;
-        console.log("this is " + fiveDaysForecastQueryURL);
+        console.log("FINAL API CALL \n" + fiveDaysForecastQueryURL);
+
+        $.ajax({
+          url: fiveDaysForecastQueryURL,
+          method: "GET",
+        }).then(function (forecast) {
+          let forecastList = forecast.list;
+          getFiveDaysForecast(forecastList);
+          console.log("DONE");
+        });
       });
     })
     .catch(function (error) {
