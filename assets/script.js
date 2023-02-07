@@ -25,6 +25,7 @@ function extractDataToPopulatePage(day) {
   dataOfTheDay.push(`Humidity: ${day.main.humidity}%`);
   dataOfTheDay.push(`Wind: ${day.wind.speed} KPH`);
   console.log(dataOfTheDay);
+  return dataOfTheDay;
 }
 
 /**
@@ -145,7 +146,7 @@ function getCityWeather() {
       let todayWeatherQueryURL = buildTodayWeatherQueryURL(response[0]);
 
       // get the lat&lon from response obj in order to build URL to call 5 days forecast API
-      let fiveDaysForecastQueryURL = buildFiveDaysForecastQueryURL(response[0]);
+      let nextQueryURL = buildFiveDaysForecastQueryURL(response[0]);
 
       // call api using currentWeatherQueryURL
       $.ajax({
@@ -155,6 +156,8 @@ function getCityWeather() {
         console.log(day);
         extractDataToPopulatePage(day);
         displayTodayWeather(day);
+        let fiveDaysForecastQueryURL = nextQueryURL;
+        console.log("this is " + fiveDaysForecastQueryURL);
       });
     })
     .catch(function (error) {
