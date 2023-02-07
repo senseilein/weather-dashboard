@@ -27,6 +27,27 @@ function extractDataOfTheDayToPopulatePage(day) {
   return dataOfTheDay;
 }
 
+function createOneDivPerForecastDay(day, dataOfTheDay) {
+  const forecastSection = $("#forecast");
+
+  const dayDiv = $("<div>");
+  dayDiv.addClass("dayDiv");
+
+  const dayHeading = $("<h2>");
+  const datePlaceholder = "01/01/2023";
+  dayHeading.append(datePlaceholder);
+
+  const dayWeatherIcon = $("<img>");
+  dayWeatherIcon.attr("src", getWeatherIcon(day));
+
+  const dayTemp = $("<p>").text(`Temp: ${dataOfTheDay[0]}°C`);
+  const dayHumidity = $("<p>").text(`Humidity: ${dataOfTheDay[1]}%`);
+  const dayWind = $("<p>").text(`Wind: ${dataOfTheDay[2]} KPH`);
+
+  dayDiv.append(dayHeading, dayTemp, dayHumidity, dayWind);
+  forecastSection.append(dayDiv);
+}
+
 /**
  * * Extract data from response object (called day) and create elements to populate todaySection accordingly
  * @param {object} day collected from API call initiated when input submit button is fired
@@ -58,8 +79,19 @@ function displayTodayWeather(day) {
   todaySection.append(todayHeading, todayTemp, todayHumidity, todayWind);
 }
 
-// *-------------------- FUNCTIONS TO CALL GEOCODING API --------------------* //
+function displayFiveDayWeather(fiveDayForecast) {
+  const forecastSection = $("#forecast");
 
+  //Make sure the requested data are only displayed once
+  forecastSection.empty();
+
+  fiveDayForecast.forEach((day) => {
+    let dataOfTheDay = extractDataOfTheDayToPopulatePage(day);
+    createOneDivPerForecastDay(day, dataOfTheDay);
+  });
+}
+
+// *-------------------- FUNCTIONS TO CALL GEOCODING API --------------------* /
 // ! TODO: Add defense, only create a button for valid day,
 // i.e. the ones that have retrievable coordinates
 // if input empty inform user accordingly and do nothing
@@ -112,22 +144,23 @@ function buildTodayWeatherQueryURL(currentCityCoordinates) {
 
 // *-------------------- FUNCTIONS TO CALL 5DAYS FORECAST API --------------------* //
 
-function buildFiveDaysForecastQueryURL(currentCityCoordinates) {
+function buildFiveDayForecastQueryURL(currentCityCoordinates) {
   //we're sending the response as currentCityCoordinates
 
   // get latitude & longitude from response object
   let lat = currentCityCoordinates.lat;
   let lon = currentCityCoordinates.lon;
 
-  let fiveDaysForecastQueryURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-  return fiveDaysForecastQueryURL;
+  let fiveDayForecastQueryURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+  return fiveDayForecastQueryURL;
 }
 
 /**
+ * * Extract 1 fixed time slot per day (avoiding current day since this is handle by a different API)
  * @param {*} forecastList
  * @returns [fiveDayData] array of data for next 5 days
  */
-function getFiveDaysForecast(forecastList) {
+function getFiveDayForecast(forecastList) {
   console.log(forecastList);
   let fiveDayData = [];
   for (let data = 0; data < forecastList.length - 1; data += 7) {
@@ -165,7 +198,7 @@ function getCityWeather() {
       console.log("WEATHER API CALL \n" + todayWeatherQueryURL);
 
       // get the lat&lon from response obj in order to build URL to call 5 days forecast API
-      let nextQueryURL = buildFiveDaysForecastQueryURL(response[0]);
+      let nextQueryURL = buildFiveDayForecastQueryURL(response[0]);
 
       // call api using currentWeatherQueryURL
       $.ajax({
@@ -174,15 +207,16 @@ function getCityWeather() {
       }).then(function (day) {
         extractDataOfTheDayToPopulatePage(day);
         displayTodayWeather(day);
-        let fiveDaysForecastQueryURL = nextQueryURL;
-        console.log("FINAL API CALL \n" + fiveDaysForecastQueryURL);
+        let fiveDayForecastQueryURL = nextQueryURL;
+        console.log("FINAL API CALL \n" + fiveDayForecastQueryURL);
 
         $.ajax({
-          url: fiveDaysForecastQueryURL,
+          url: fiveDayForecastQueryURL,
           method: "GET",
         }).then(function (forecast) {
           let forecastList = forecast.list;
-          getFiveDaysForecast(forecastList);
+          let fiveDayForecast = getFiveDayForecast(forecastList);
+          displayFiveDayWeather(fiveDayForecast);
           console.log("DONE");
         });
       });
