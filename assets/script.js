@@ -6,55 +6,61 @@ const submitBtn = $("#search-button");
 
 // *-------------------- FUNCTIONS TO MODIFY DOCUMENT ELEMENTS --------------------* //
 
-function getTodaysdate() {
+function getTodaysDate() {
   let today = moment().format("DD/M/YYYY");
   console.log({ today });
   return today;
 }
 
-function getWeatherIcon(city) {
-  console.log(city.weather[0].icon);
-  const iconCode = city.weather[0].icon;
+function getWeatherIcon(day) {
+  console.log(day.weather[0].icon);
+  const iconCode = day.weather[0].icon;
   const imgURL = `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
   return imgURL;
 }
 
+function extractDataToPopulatePage(day) {
+  let dataOfTheDay = [];
+  dataOfTheDay.push(`Temp: ${day.main.temp}°C`);
+  dataOfTheDay.push(`Humidity: ${day.main.humidity}%`);
+  dataOfTheDay.push(`Wind: ${day.wind.speed} KPH`);
+  console.log(dataOfTheDay);
+}
+
 /**
- * * Extract data from response object (called city) and create elements to populate todaySection accordingly
- * @param {object} city collected from API call initiated when input submit button is fired
+ * * Extract data from response object (called day) and create elements to populate todaySection accordingly
+ * @param {object} day collected from API call initiated when input submit button is fired
  */
-function displayTodayWeather(city) {
+function displayTodayWeather(day) {
   const todaySection = $("#today");
 
   //Make sure the requested data are only displayed once
   todaySection.empty();
 
-  console.log("temp " + city.main.temp + "*C");
-  console.log("humidity " + city.main.humidity + "%");
-  console.log("Wind " + city.wind.speed + "KPH");
-  // const todayTemp = city.main.temp + "°C";
-  // const todayHumidity = city.main.humidity + "%";
-  // const todayWind = city.wind.speed + "KPH";
-
   const searchInput = $("#search-input").val().trim();
 
-  const todayHeading = $("<h2>").text(`${searchInput} (${getTodaysdate()})`);
-  todayHeading.addClass("h2-heading");
+  const todayHeading = $("<h2>").text(`${searchInput} (${getTodaysDate()})`);
+  todayHeading.addClass("h2-heading font-weight-bold");
 
   const weatherIcon = $("<img>");
-  weatherIcon.attr("src", getWeatherIcon(city));
+  weatherIcon.attr("src", getWeatherIcon(day));
   todayHeading.append(weatherIcon);
 
-  const todayTemp = $("<p>").text(`Temp: ${city.main.temp}°C`);
-  const todayHumidity = $("<p>").text(`Humidity: ${city.main.humidity}%`);
-  const todayWind = $("<p>").text(`Wind: ${city.wind.speed} KPH`);
+  // ! TODO Adds more checks for other params
+  // if (day.main.temp) {
+  //   let todayTemp = $("<p>").text(`Temp: ${day.main.temp}°C`);
+  //   todaySection.append(todayTemp);
+  // }
+  const todayTemp = $("<p>").text(`Temp: ${day.main.temp}°C`);
+  const todayHumidity = $("<p>").text(`Humidity: ${day.main.humidity}%`);
+  const todayWind = $("<p>").text(`Wind: ${day.wind.speed} KPH`);
 
   todaySection.append(todayHeading, todayTemp, todayHumidity, todayWind);
 }
 
 // *-------------------- FUNCTIONS TO CALL GEOCODING API --------------------* //
 
-// ! TODO: Add defense, only create a button for valid city,
+// ! TODO: Add defense, only create a button for valid day,
 // i.e. the ones that have retrievable coordinates
 // if input empty inform user accordingly and do nothing
 // remove pattern tag and create function to validate input
@@ -66,7 +72,7 @@ function displayTodayWeather(city) {
 function createCityBtn() {
   const searchInput = $("#search-input").val().trim();
   const cityBtn = $("<button>");
-  cityBtn.addClass("btn, city-button");
+  cityBtn.addClass("city-button");
   cityBtn.text(searchInput);
   history.append(cityBtn);
 }
@@ -77,9 +83,10 @@ function createCityBtn() {
 function buildGeocodingQueryURL() {
   // get user input and store it in cityName
   const cityName = $("#search-input").val().trim();
-  console.log("inputed city is " + cityName);
+  console.log("inputed day is " + cityName); // ! TODO remove this !
 
   // create query URL(limit to 1 result)
+  // ! add more defenses for cityName
   let geocodingQueryURL = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${apiKey}`;
   return geocodingQueryURL;
 }
@@ -98,7 +105,7 @@ function buildTodayWeatherQueryURL(currentCityCoordinates) {
 
   console.log({ lat });
   console.log({ lon });
-
+  // ! ADD more checks to protect your code
   let todayWeatherQueryURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
   console.log(todayWeatherQueryURL);
   return todayWeatherQueryURL;
@@ -122,13 +129,13 @@ function buildFiveDaysForecastQueryURL(currentCityCoordinates) {
 // ! TODO: Improve - if failed then inform user accordingly
 /**
  * * Call the Geocoding API and
- * * Collect the lat-lon coordinates of the user input city
+ * * Collect the lat-lon coordinates of the user input day
  * ? @returns cityCoordinates or false?  // will dvp & modif later with IF statement depending on API response
  */
 function getCityWeather() {
   const geocodingQueryURL = buildGeocodingQueryURL();
 
-  //call Geocoding API to extract city coordinates from the response provided
+  //call Geocoding API to extract day coordinates from the response provided
   $.ajax({
     url: geocodingQueryURL,
     method: "GET",
@@ -144,9 +151,10 @@ function getCityWeather() {
       $.ajax({
         url: todayWeatherQueryURL,
         method: "GET",
-      }).then(function (city) {
-        console.log(city);
-        displayTodayWeather(city);
+      }).then(function (day) {
+        console.log(day);
+        extractDataToPopulatePage(day);
+        displayTodayWeather(day);
       });
     })
     .catch(function (error) {
