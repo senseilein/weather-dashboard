@@ -72,9 +72,6 @@ button::first-letter, h2::first-letter {
 
 /*Forecast*/
 
-.hide{
-    display: none;
-}
 #forecast {
     border: 2px solid blueviolet;
 }

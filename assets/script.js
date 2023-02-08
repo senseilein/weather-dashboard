@@ -2,6 +2,9 @@ const history = $("#history");
 const form = $("#search-form");
 const submitBtn = $("#search-button");
 
+const forecastHeading = $("#forecast-heading");
+forecastHeading.hide();
+
 /* -------------------- FUNCTIONS -------------------- */
 
 // *-------------------- FUNCTIONS TO MODIFY DOCUMENT ELEMENTS --------------------* //
@@ -26,11 +29,7 @@ function extractDataOfTheDayToPopulatePage(day) {
   console.log(dataOfTheDay);
   return dataOfTheDay;
 }
-// function addForecastHeading(){
-//   const wrap = $("#wrap");
-//   const forecastHeading = $("<h2>").text("5-Day Forecast");
-//   forecastHeading.addClass()
-// }
+
 function createOneDivPerForecastDay(day, dataOfTheDay) {
   const forecastSection = $("#forecast");
 
@@ -89,9 +88,9 @@ function displayFiveDayWeather(fiveDayForecast) {
 
   //Make sure the requested data are only displayed once
   forecastSection.empty();
-  forecastHeading.removeClass("hide");
+  forecastHeading.show();
 
-  fiveDayForecast.forEach((day) => {
+  fiveDayForecast.forEach((day, index) => {
     let dataOfTheDay = extractDataOfTheDayToPopulatePage(day);
     createOneDivPerForecastDay(day, dataOfTheDay);
   });
@@ -237,6 +236,7 @@ function getCityWeather() {
 }
 
 // *-------------------- EVENT HANDLERS --------------------* //
+
 // Event delegation - Handle form submission with submit button
 form.on("submit", submitBtn, function (event) {
   event.preventDefault();
