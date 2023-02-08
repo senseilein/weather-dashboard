@@ -14,6 +14,10 @@ button::first-letter, h2::first-letter {
 
 /*Search area*/
 
+aside {
+    padding-top: 4.5rem;
+}
+
 .h2-heading{
     font-size: 2.7rem;
 }
@@ -33,6 +37,10 @@ button::first-letter, h2::first-letter {
     color: white;
     border-radius: 0.6rem;
     font-size: 1.5rem;
+}
+
+.hr {
+    border: 0.1rem solid #d0d0d0;   
 }
 
 /*History area*/
@@ -56,25 +64,39 @@ button::first-letter, h2::first-letter {
 /*Today's Section*/
 
 .today-style {
-    border: 1px solid black;
-   
+    border: 0.2rem solid #d0d0d0;
+    border-radius: 0.6rem; 
 }
 
 #today > p {
-    font-size: 1.5rem;   
+    font-size: 1.5rem;  
 }
 
 /*Forecast section*/
 
-#forecast {
-    border: 2px solid blueviolet;
-}
-
-#forecast-heading{
-    border: 2px solid orange;
-}
-
 .dayDiv {
-    border: 1px solid burlywood;
+    border: 0.2rem solid #d0d0d0;
+    padding: 1rem;
+    background-color: #2d3e50;
+    color: white;
+    border-radius: 0.6rem;
 }
 
+.dayDiv h2 {
+    text-align: center;
+    font-weight: bold;
+}
+
+.dayDiv p {
+    font-size: 1.5rem;
+}
+
+.dayDiv img {
+    width: 90%;
+    margin: auto;
+}
+
+#today, #wrap {
+    margin: 1rem;
+    padding: 1rem;
+}
