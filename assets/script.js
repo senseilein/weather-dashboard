@@ -2,12 +2,52 @@ const history = $("#history");
 const form = $("#search-form");
 const submitBtn = $("#search-button");
 
+// .hide() will be changed to .show() when we call displayFiveDayWeather()
 const forecastHeading = $("#forecast-heading");
 forecastHeading.hide();
 
+/* -------------------- LOCAL STORAGE -------------------- */
+function initLocalStorage() {
+  // try and get the array from ls
+  let cityList = JSON.parse(localStorage.getItem("cityList"));
+
+  // if array is empty, we create one and put it in the Local Storage
+  if (!cityList) {
+    localStorage.setItem("cityList", JSON.stringify([]));
+  }
+}
+initLocalStorage();
+
+function initCityList() {
+  // we get all data from local storage
+  let cityList = JSON.parse(localStorage.getItem("cityList"));
+
+  // for each city, we render a button
+  for (let i = 0; i < cityList.length; i++) {
+    renderCityButtonFromLocalStorage(cityList, i);
+  }
+}
+
+initCityList();
+
+function renderCityButtonFromLocalStorage(cityList, i) {
+  const cityBtn = $("<button>").text(cityList[i]);
+  cityBtn.addClass("city-button");
+  history.append(cityBtn);
+}
+
+function updateLocalStorageWithNewCity(searchInput) {
+  // get the array from local storage (with whatever it has inside)
+  let cityList = JSON.parse(localStorage.getItem("cityList"));
+  // add the new city to the object
+  cityList.push(searchInput);
+  // put the updated array back in the local storage
+  localStorage.setItem("cityList", JSON.stringify(cityList));
+}
+
 /* -------------------- FUNCTIONS -------------------- */
 
-// *-------------------- FUNCTIONS TO MODIFY DOCUMENT ELEMENTS --------------------* //
+// *-------------------- FUNCTIONS TO MODIFY AND POPULATE DOCUMENT ELEMENTS --------------------* //
 
 function getTodaysDate() {
   let today = moment().format("DD/M/YYYY");
@@ -51,7 +91,7 @@ function createOneDivPerForecastDay(day, indexOfDay, dataOfTheDay) {
   const dayHumidity = $("<p>").text(`Humidity: ${dataOfTheDay[1]}`);
   const dayWind = $("<p>").text(`Wind: ${dataOfTheDay[2]}`);
 
-  dayDiv.append(dayHeading, dayTemp, dayHumidity, dayWind);
+  dayDiv.append(dayHeading, dayWeatherIcon, dayTemp, dayHumidity, dayWind);
   forecastSection.append(dayDiv);
 }
 
@@ -112,10 +152,13 @@ function displayFiveDayWeather(fiveDayForecast) {
  */
 function createCityBtn() {
   const searchInput = $("#search-input").val().trim();
+
   const cityBtn = $("<button>");
   cityBtn.addClass("city-button");
   cityBtn.text(searchInput);
   history.append(cityBtn);
+
+  updateLocalStorageWithNewCity(searchInput);
 }
 
 /**

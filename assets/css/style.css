@@ -79,3 +79,7 @@ button::first-letter, h2::first-letter {
 #forecast-heading{
     border: 2px solid orange;
 }
+
+.dayDiv {
+    border: 1px solid burlywood;
+}
