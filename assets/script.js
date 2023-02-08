@@ -15,6 +15,12 @@ function getTodaysDate() {
   return today;
 }
 
+function getFutureDateFromToday(indexOfDay) {
+  let today = moment();
+  let futureDay = today.add(indexOfDay, "days").format("DD/M/YYYY");
+  return futureDay;
+}
+
 function getWeatherIcon(day) {
   const iconCode = day.weather[0].icon;
   const imgURL = `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
@@ -30,15 +36,13 @@ function extractDataOfTheDayToPopulatePage(day) {
   return dataOfTheDay;
 }
 
-function createOneDivPerForecastDay(day, dataOfTheDay) {
+function createOneDivPerForecastDay(day, indexOfDay, dataOfTheDay) {
   const forecastSection = $("#forecast");
 
   const dayDiv = $("<div>");
   dayDiv.addClass("dayDiv");
 
-  const dayHeading = $("<h2>");
-  const datePlaceholder = "01/01/2023";
-  dayHeading.append(datePlaceholder);
+  const dayHeading = $("<h2>").text(getFutureDateFromToday(indexOfDay));
 
   const dayWeatherIcon = $("<img>");
   dayWeatherIcon.attr("src", getWeatherIcon(day));
@@ -92,7 +96,7 @@ function displayFiveDayWeather(fiveDayForecast) {
 
   fiveDayForecast.forEach((day, index) => {
     let dataOfTheDay = extractDataOfTheDayToPopulatePage(day);
-    createOneDivPerForecastDay(day, dataOfTheDay);
+    createOneDivPerForecastDay(day, index, dataOfTheDay);
   });
 }
 
