@@ -105,7 +105,7 @@ function displayTodayWeather(day) {
   //Make sure the requested data are only displayed once
   todaySection.empty();
 
-  const searchInput = $("#search-input").val().trim();
+  const searchInput = getCityNameFromInput();
 
   const todayHeading = $("<h2>").text(`${searchInput} (${getTodaysDate()})`);
   todayHeading.addClass("h2-heading font-weight-bold");
@@ -146,12 +146,13 @@ function displayFiveDayWeather(fiveDayForecast) {
 // if input empty inform user accordingly and do nothing
 // remove pattern tag and create function to validate input
 // TODO: TBS issue with Bootstrap class my-5 not rendered when dynamically added to cityBtn
+
 /*
  * * Create a button with user input text and
  * * Append it to the #history section (inside the aside)#
  */
 function createCityBtn() {
-  const searchInput = $("#search-input").val().trim();
+  const searchInput = getCityNameFromInput();
 
   const cityBtn = $("<button>");
   cityBtn.addClass("city-button");
@@ -161,12 +162,17 @@ function createCityBtn() {
   updateLocalStorageWithNewCity(searchInput);
 }
 
+function getCityNameFromInput() {
+  const searchInput = $("#search-input").val().trim();
+  return searchInput;
+}
+
 /**
  * @return {string} geocodingQueryURL that will be used to call the API to retrieve lat&lon based on cityName
  */
 function buildGeocodingQueryURL() {
   // get user input and store it in cityName
-  const cityName = $("#search-input").val().trim();
+  const cityName = getCityNameFromInput();
   console.log("inputed day is " + cityName); // ! TODO remove this !
 
   // create query URL(limit to 1 result)
@@ -291,6 +297,4 @@ form.on("submit", submitBtn, function (event) {
   createCityBtn();
 
   getCityWeather();
-
-  console.log("done for now");
 });
