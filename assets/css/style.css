@@ -8,8 +8,15 @@ button::first-letter, h2::first-letter {
 /*Header*/
 
 .weather-header{
+    height: 15vh;
     background: rgb(136,195,237);
     background: linear-gradient(90deg, rgba(136,195,237,1) 0%, rgba(51,130,187,1) 22%, rgba(51,98,187,1) 50%, rgba(32,9,76,1) 100%);
+}
+
+.weather-header h1 {
+    width: 96%;
+    padding-top: 3rem;
+    font-size: 6rem;
 }
 
 /*Search area*/
@@ -55,8 +62,8 @@ aside {
     font-size: 1.5rem;
 
     /* TODO: should be dynamically added in createCityBtn() */
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    
+    margin-bottom: 1.5rem;
     padding-top: 1rem;
     padding-bottom: 3.5rem;
 }
