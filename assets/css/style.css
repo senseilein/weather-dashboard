@@ -37,7 +37,7 @@ button::first-letter, h2::first-letter {
 
 /*History area*/
 
-.city-button {
+.city-buttons {
     width: 100%;
     height: 3rem;
     border: 2px solid #d0d0d0;
@@ -67,12 +67,6 @@ button::first-letter, h2::first-letter {
 /*Forecast section*/
 
 #forecast {
-    padding: 3rem;
-}
-
-/*Forecast*/
-
-#forecast {
     border: 2px solid blueviolet;
 }
 
@@ -83,3 +77,4 @@ button::first-letter, h2::first-letter {
 .dayDiv {
     border: 1px solid burlywood;
 }
+
