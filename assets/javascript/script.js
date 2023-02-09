@@ -178,16 +178,25 @@ function createCityBtn() {
   history.append(cityBtn);
 
   updateLocalStorageWithNewCity(searchInput);
+  checkNumberOfCitiesInHistory();
+}
+
+function checkNumberOfCitiesInHistory() {
+  const history = $("#history");
+  const numOfChildren = history.children().length;
+
+  if (numOfChildren > 6) {
+    //Remove first button in the #history div so that there are only 6 buttons max at any given time
+    history.children(0)["0"].remove();
+  }
+  return;
 }
 
 /**
  * @return {string} geocodingQueryURL that will be used to call the API to retrieve lat&lon based on cityName
+ * @param cityName will be passed from mother function getCityWeather()
  */
 function buildGeocodingQueryURL(cityName) {
-  // get user input and store it in cityName
-  // const cityName = getCityNameFromInput();
-  console.log("inputed day is " + cityName); // ! TODO remove this !
-
   // create query URL(limit to 1 result)
   // ! add more defense for cityName
   let geocodingQueryURL = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${apiKey}`;
