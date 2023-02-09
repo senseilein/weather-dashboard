@@ -189,7 +189,20 @@ function getCityNameFromInput() {
   if (!isCityNameValid) {
     return "";
   }
-  return searchInput;
+  return capitalizeCityName(searchInput);
+}
+
+function capitalizeCityName(input) {
+  let cityName = input.split(" ");
+
+  let capitalizeCityName = cityName.map((word) => {
+    const firstLetter = word[0].toUpperCase();
+    console.log(firstLetter);
+    const restOfWord = word.substring(1).toLowerCase();
+    console.log(restOfWord);
+    return firstLetter + restOfWord;
+  });
+  return capitalizeCityName.join(" ");
 }
 
 // ! Add or Update function to check for valid input (then remove html input pattern) against regex
