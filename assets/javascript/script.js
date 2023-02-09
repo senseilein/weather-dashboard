@@ -100,9 +100,9 @@ function createOneDivPerForecastDay(day, indexOfDay, dataOfTheDay) {
   const dayWeatherIcon = $("<img>");
   dayWeatherIcon.attr("src", getWeatherIcon(day));
 
-  const dayTemp = $("<p>").text(`Temp: ${dataOfTheDay[0]}`);
-  const dayHumidity = $("<p>").text(`Humidity: ${dataOfTheDay[1]}`);
-  const dayWind = $("<p>").text(`Wind: ${dataOfTheDay[2]}`);
+  const dayTemp = $("<p>").text(dataOfTheDay[0]);
+  const dayHumidity = $("<p>").text(dataOfTheDay[1]);
+  const dayWind = $("<p>").text(dataOfTheDay[2]);
 
   dayDiv.append(dayHeading, dayWeatherIcon, dayTemp, dayHumidity, dayWind);
   forecastSection.append(dayDiv);
