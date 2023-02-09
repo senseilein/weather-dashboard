@@ -70,7 +70,7 @@ function getTodaysDate() {
 
 function getFutureDateFromToday(indexOfDay) {
   let today = moment();
-  let futureDay = today.add(indexOfDay, "days").format("DD/M/YYYY");
+  let futureDay = today.add(indexOfDay + 1, "days").format("DD/M/YYYY");
   return futureDay;
 }
 
