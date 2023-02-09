@@ -43,8 +43,16 @@ function renderCityButtonFromLocalStorage(cityList, i) {
 function updateLocalStorageWithNewCity(searchInput) {
   // get the array from local storage (with whatever it has inside)
   let cityList = JSON.parse(localStorage.getItem("cityList"));
-  // add the new city to the object
-  cityList.push(searchInput);
+
+  // if searchInput doesn't already exists in the array, add the new city to the object
+  if (!cityList.includes(searchInput)) {
+    cityList.push(searchInput);
+  }
+  // if cityList.length is > 5 , delete the first item in the list (oldest city)
+  if (cityList.length > 6) {
+    cityList.shift();
+  }
+
   // put the updated array back in the local storage
   localStorage.setItem("cityList", JSON.stringify(cityList));
 }
