@@ -71,6 +71,7 @@ It's done when:
 - Reading API documentation
 - Using the ajax() method to exchange data with a server, and update parts of the web page - without reloading the whole page.
 - Using Local Storage to store persistent data
+- Using Regex to check input validity
 
 ### ➕ Suggestions for improvement
 
@@ -86,3 +87,4 @@ No installation needed however to use the APIs mentioned above as a developer, i
 - This project was created as part of a coding assignment with [Trilogy Education Services](https://skillsforlife.edx.org/?utm_source=govuk)
 - Thanks to my tutors - Tudor for explaining how localStorage works and Abdulraghman for his clear explanations about the ajax method.
 - Special thank to my tutor Clobee for helping me debug my code.
+- [Regex101](https://regex101.com/), free multilingual regular expression debugger with real time explanation, error detection and highlighting.
