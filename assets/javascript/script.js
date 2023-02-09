@@ -165,6 +165,10 @@ function getCityNameFromInput() {
   return searchInput;
 }
 
+// ! Add or Update function to check for valid input (then remove html input pattern) against regex
+// alphabet = /^[A-Za-z]+$/
+// ! return Capitalize cityNAame (then remove that style from css)
+
 /*
  * * Create a button with user input text and
  * * Append it to the #history section (inside the aside)#
