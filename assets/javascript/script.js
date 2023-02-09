@@ -162,6 +162,18 @@ function displayFiveDayWeather(fiveDayForecast) {
 
 function getCityNameFromInput() {
   const searchInput = $("#search-input").val().trim();
+
+  const specialChar = '[`!@#$%^&*()_+-=[]{};:"\\|,.<>/?~]/'.split;
+  if (
+    searchInput === "" ||
+    searchInput.includes([0 - 9]) ||
+    searchInput.includes(specialChar)
+  ) {
+    return "";
+  }
+
+  //const firstChar = searchInput[0].toUpperCase();
+
   return searchInput;
 }
 
@@ -178,8 +190,9 @@ function createCityBtn() {
 
   // get the array from local storage and check if the inputed city was already looked up
   // if yes, exit the function and do not create a button (since it already exists)
+  // if the searchInput is invalid, exit
   let cityList = JSON.parse(localStorage.getItem("cityList"));
-  if (cityList.includes(searchInput)) {
+  if (cityList.includes(searchInput) || searchInput === "") {
     return;
   }
 
