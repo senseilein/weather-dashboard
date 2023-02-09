@@ -48,6 +48,7 @@ function updateLocalStorageWithNewCity(searchInput) {
   if (!cityList.includes(searchInput)) {
     cityList.push(searchInput);
   }
+
   // if cityList.length is > 5 , delete the first item in the list (oldest city)
   if (cityList.length > 6) {
     cityList.shift();
@@ -170,6 +171,13 @@ function getCityNameFromInput() {
  */
 function createCityBtn() {
   const searchInput = getCityNameFromInput();
+
+  // get the array from local storage and check if the inputed city was already looked up
+  // if yes, exit the function and do not create a button (since it already exists)
+  let cityList = JSON.parse(localStorage.getItem("cityList"));
+  if (cityList.includes(searchInput)) {
+    return;
+  }
 
   const cityBtn = $("<button>");
   cityBtn.attr("id", searchInput);
