@@ -1,4 +1,4 @@
-# PASSWORD GENERATOR
+# WEATHER DASHBOARD
 
 ![](https://img.shields.io/badge/html-HTML5-orange?logo=html5)
 ![](https://img.shields.io/badge/css-CSS3-%231572B6?logo=css3)
