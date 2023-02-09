@@ -153,6 +153,11 @@ function displayFiveDayWeather(fiveDayForecast) {
   });
 }
 
+function clearInputField() {
+  const inputField = $("#search-input");
+  inputField.val("");
+}
+
 // *-------------------- FUNCTIONS TO CALL GEOCODING API --------------------* /
 // ! TODO: Add defense, only create a button for valid day,
 // i.e. the ones that have retrievable coordinates
@@ -182,7 +187,7 @@ function getCityNameFromInput() {
   const isCityNameValid = checkInputValidity(searchInput);
 
   if (!isCityNameValid) {
-    searchInput = "";
+    return "";
   }
   return searchInput;
 }
@@ -214,6 +219,7 @@ function createCityBtn() {
 
   updateLocalStorageWithNewCity(searchInput);
   checkNumberOfCitiesInHistory();
+  clearInputField();
 }
 
 function checkNumberOfCitiesInHistory() {
@@ -333,6 +339,8 @@ function getCityWeather(cityName) {
           let fiveDayForecast = getFiveDayForecast(forecastList);
           displayFiveDayWeather(fiveDayForecast);
           console.log("DONE " + cityName);
+          //create a btn only if no error occurs
+          createCityBtn();
         });
       });
     })
@@ -352,8 +360,6 @@ function getCityWeather(cityName) {
 // Event delegation - Handle form submission with submit button
 form.on("submit", submitBtn, function (event) {
   event.preventDefault();
-
-  createCityBtn();
   const cityName = getCityNameFromInput();
   getCityWeather(cityName);
 });
