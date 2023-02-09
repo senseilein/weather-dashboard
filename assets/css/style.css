@@ -8,7 +8,7 @@ button::first-letter, h2::first-letter {
 /*Header*/
 
 .weather-header{
-    height: 15vh;
+    height: 21vh;
     background: rgb(136,195,237);
     background: linear-gradient(90deg, rgba(136,195,237,1) 0%, rgba(51,130,187,1) 22%, rgba(51,98,187,1) 50%, rgba(32,9,76,1) 100%);
 }
