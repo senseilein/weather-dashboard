@@ -160,20 +160,30 @@ function displayFiveDayWeather(fiveDayForecast) {
 // remove pattern tag and create function to validate input
 // TODO: TBS issue with Bootstrap class my-5 not rendered when dynamically added to cityBtn
 
-function getCityNameFromInput() {
-  const searchInput = $("#search-input").val().trim();
+function checkInputValidity(searchInput) {
+  const authorizedChar = /^[a-zA-Z\s]*$/gi;
 
-  const specialChar = '[`!@#$%^&*()_+-=[]{};:"\\|,.<>/?~]/'.split;
-  if (
-    searchInput === "" ||
-    searchInput.includes([0 - 9]) ||
-    searchInput.includes(specialChar)
-  ) {
-    return "";
+  if (!searchInput) {
+    console.log("wrong string");
+    return false;
   }
 
-  //const firstChar = searchInput[0].toUpperCase();
+  if (searchInput.match(authorizedChar)) {
+    console.log(searchInput + ": contains only letters and spaces");
+    return true;
+  }
 
+  console.log("special character alert!");
+  return false;
+}
+
+function getCityNameFromInput() {
+  const searchInput = $("#search-input").val().trim();
+  const isCityNameValid = checkInputValidity(searchInput);
+
+  if (!isCityNameValid) {
+    searchInput = "";
+  }
   return searchInput;
 }
 
@@ -331,8 +341,10 @@ function getCityWeather(cityName) {
       alert(
         "Sorry, we were not able to retrieve the requested data. Please try again later."
       );
-      return;
+      return false;
     });
+
+  return true;
 }
 
 // *-------------------- EVENT HANDLERS --------------------* //
