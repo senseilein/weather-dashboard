@@ -64,7 +64,7 @@ function getFutureDateFromToday(indexOfDay) {
 
 function getWeatherIcon(day) {
   const iconCode = day.weather[0].icon;
-  const imgURL = `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
+  const imgURL = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
   return imgURL;
 }
 
@@ -177,7 +177,7 @@ function buildGeocodingQueryURL(cityName) {
 
   // create query URL(limit to 1 result)
   // ! add more defense for cityName
-  let geocodingQueryURL = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${apiKey}`;
+  let geocodingQueryURL = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${apiKey}`;
   return geocodingQueryURL;
 }
 
