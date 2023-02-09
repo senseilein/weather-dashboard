@@ -6,6 +6,9 @@ const submitBtn = $("#search-button");
 const forecastHeading = $("#forecast-heading");
 forecastHeading.hide();
 
+const todaySection = $("#today");
+todaySection.hide();
+
 /* -------------------- LOCAL STORAGE -------------------- */
 function initLocalStorage() {
   // try and get the array from ls
@@ -105,6 +108,8 @@ function displayTodayWeather(day, cityName) {
 
   //Make sure the requested data are only displayed once
   todaySection.empty();
+
+  todaySection.show();
 
   const todayHeading = $("<h2>").text(`${cityName} (${getTodaysDate()})`);
   todayHeading.addClass("h2-heading font-weight-bold");
