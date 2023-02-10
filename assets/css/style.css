@@ -125,6 +125,19 @@ aside {
 
 
 /*---------- Media Queries ----------*/
+
+/* medium screem */
+@media screen and (max-width: 989px){
+    #today h2, #today p {
+        text-align: center;
+    }
+
+    #today p{
+        font-size: 1.9rem;
+    }
+ }
+
+/* small screen */
 @media screen and (max-width: 412px){
     
     #today p,button {
