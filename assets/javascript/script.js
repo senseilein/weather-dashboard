@@ -74,7 +74,7 @@ function updateLocalStorageWithNewCity(searchInput) {
 // *--------------------------------------------------- FUNCTIONS TO MODIFY AND POPULATE DOCUMENT ELEMENTS ---------------------------------------------------* //
 
 function getTodaysDate() {
-  let today = moment().format("DD/M/YYYY");
+  let today = moment().format("DD/MM/YYYY");
   console.log({ today });
   return today;
 }
@@ -82,7 +82,7 @@ function getTodaysDate() {
 //* function used for each day in createOneDivPerForecastDay()
 function getFutureDateFromToday(indexOfDay) {
   let today = moment();
-  let futureDay = today.add(indexOfDay + 1, "days").format("DD/M/YYYY");
+  let futureDay = today.add(indexOfDay + 1, "days").format("DD/MM/YYYY");
   return futureDay;
 }
 
