@@ -216,7 +216,7 @@ function capitalizeCityName(input) {
 function createCityBtn() {
   const searchInput = getCityNameFromInput();
 
-  // get the array from local storage and check if the inputed city was already looked up
+  // get the array from local storage and check if the inputed city was already stored
   // if yes, exit the function and do not create a button (since it already exists)
   // if the searchInput is invalid, exit as well
   let cityList = JSON.parse(localStorage.getItem("cityList"));
@@ -233,7 +233,7 @@ function createCityBtn() {
   return searchInput;
 }
 
-function checkNumberOfCitiesInHistory() {
+function keepOnlyLastSixCitiesInHistory() {
   const history = $("#history");
   const numOfChildren = history.children().length;
 
@@ -356,7 +356,7 @@ function getCityWeather(cityName) {
           //create a btn only if no error occurs
           const searchInput = createCityBtn();
           updateLocalStorageWithNewCity(searchInput);
-          checkNumberOfCitiesInHistory();
+          keepOnlyLastSixCitiesInHistory();
           clearInputField();
         });
       });
