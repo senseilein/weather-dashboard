@@ -246,7 +246,7 @@ function keepOnlyLastSixCitiesInHistory() {
 
 /**
  * @return {string} geocodingQueryURL that will be used to call the API to retrieve lat&lon based on cityName
- * @param cityName will be passed from mother function getCityWeather()
+ * @param cityName will be passed from main function getCityWeather() where this function is called
  */
 function buildGeocodingQueryURL(cityName) {
   // ? create query URL(limit to 1 result)
@@ -255,12 +255,11 @@ function buildGeocodingQueryURL(cityName) {
 }
 
 // *---------------------------------------- FUNCTIONS TO CALL CURRENT WEATHER API ----------------------------------------* //
-// https://openweathermap.org/current
 
 /**
  * @return {string} currentWeatherQueryURL that will be used to call the current day weather API
  * @param currentCityCoordinates is the response from Geocoding API
- * any error will be catch in "motherfunction" getCityWeather()
+ * any error will be caught and handled in main function getCityWeather()
  */
 function buildTodayWeatherQueryURL(currentCityCoordinates) {
   //we're sending the response as currentCityCoordinates
@@ -274,7 +273,7 @@ function buildTodayWeatherQueryURL(currentCityCoordinates) {
 }
 
 // *---------------------------------------- FUNCTIONS TO CALL 5DAYS FORECAST API ----------------------------------------* //
-// 5-day forecast includes weather forecast data with 3-hour step (during 5days) > https://openweathermap.org/forecast5
+// 5-day forecast includes weather forecast data with 3-hour step > https://openweathermap.org/forecast5
 
 function buildFiveDayForecastQueryURL(currentCityCoordinates) {
   //we're sending the response as currentCityCoordinates
@@ -288,23 +287,20 @@ function buildFiveDayForecastQueryURL(currentCityCoordinates) {
 }
 
 /**
- * * Extract 1 fixed time slot per day (avoiding current day since this is handle by a different API)
+ * * Extract 1 fixed time slot per day (avoiding current day since this is handled by a different API)
  * @param forecastList is extracted from the response from 5-day-API call
- * @returns [fiveDayData] array of data for next 5 days
+ * @returns [fiveDayData] array of selected data for the next 5 days
  */
 function getFiveDayForecast(forecastList) {
   console.log(forecastList);
   let fiveDayData = [];
   for (let data = 0; data < forecastList.length - 1; data += 7) {
+    // skip current day since we already use current weather API for that
     if (data === 0) {
       continue;
     }
     fiveDayData.push(forecastList[data]);
   }
-
-  console.log("final");
-  console.log(fiveDayData);
-  console.log(fiveDayData[0]);
   return fiveDayData;
 }
 
@@ -323,13 +319,12 @@ function getCityWeather(cityName) {
     method: "GET",
   })
     .then(function (response) {
-      // get the lat&lon from response obj in order to build URL to call 2nd API to get today's weather
+      // get the lat&lon from response obj in order to build URL to call both current Weather API and 5 days forecast API
       let todayWeatherQueryURL = buildTodayWeatherQueryURL(response[0]);
 
-      // get the lat&lon from response obj in order to build URL to call 5 days forecast API
-      let nextQueryURL = buildFiveDayForecastQueryURL(response[0]);
+      let fiveDayForecastQueryURL = buildFiveDayForecastQueryURL(response[0]);
 
-      // call api using currentWeatherQueryURL
+      // call current Weather API
       $.ajax({
         url: todayWeatherQueryURL,
         method: "GET",
@@ -338,14 +333,12 @@ function getCityWeather(cityName) {
         extractDataOfTheDayToPopulatePage(day);
         displayTodayWeather(day, cityName);
 
-        //Pass it here in order to make it available in the next ajax()
-        let fiveDayForecastQueryURL = nextQueryURL;
-
+        // call 5-day-forecast API
         $.ajax({
           url: fiveDayForecastQueryURL,
           method: "GET",
         }).then(function (forecast) {
-          // the forecast.list is the bit we need to extract from the forecast response
+          // the forecast.list is the bit we need to extract from the 5-day forecast response
           let forecastList = forecast.list;
 
           let fiveDayForecast = getFiveDayForecast(forecastList);
@@ -353,7 +346,7 @@ function getCityWeather(cityName) {
           //Update webpage with weather data for the 5 days
           displayFiveDayWeather(fiveDayForecast);
 
-          //create a btn only if no error occurs
+          //create a btn and update local storage only if no error occurs
           const searchInput = createCityBtn();
           updateLocalStorageWithNewCity(searchInput);
           keepOnlyLastSixCitiesInHistory();
@@ -364,7 +357,7 @@ function getCityWeather(cityName) {
     .catch(function (error) {
       console.log("ERROR", error);
       alert(
-        "Sorry, we were not able to retrieve the requested data. Please check the spelling or try again later."
+        "Sorry, we were not able to retrieve the requested data.\nPlease check the spelling or try again later."
       );
       return false;
     });
