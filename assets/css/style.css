@@ -1,9 +1,9 @@
 /*Global*/
 
-/*this can be replaced with a JS function*/
-button::first-letter, h2::first-letter {
+/* replaced with a JS function*/
+/* button::first-letter, h2::first-letter {
     text-transform:capitalize;
-}
+} */
 
 /*Header*/
 
@@ -87,12 +87,16 @@ aside {
 
 /*Forecast section*/
 
+#forecast{
+    flex-wrap: wrap;
+}
 .dayDiv {
     border: 0.2rem solid #d0d0d0;
     padding: 1rem;
     background-color: #2d3e50;
     color: white;
     border-radius: 0.6rem;
+    width: 18%;
 }
 
 .dayDiv h2 {
@@ -113,3 +117,32 @@ aside {
     margin: 1rem;
     padding: 1rem;
 }
+
+@media screen and (max-width: 412px){
+    
+    #today p,button {
+        font-size: 1.8rem;
+    }
+        
+    .dayDiv {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+    }
+
+    .dayDiv img{
+        display: block;
+        width:40%;
+        margin:auto;
+    }
+
+    .dayDiv p {
+        text-align: center;
+        font-size: 1.8rem;
+    }
+
+    .dayDiv:last-child {
+        flex-grow: 1;
+    }
+    
+ }
