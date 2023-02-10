@@ -1,11 +1,11 @@
-/*Global*/
-
+/*Extra*/
 /* replaced with a JS function*/
 /* button::first-letter, h2::first-letter {
     text-transform:capitalize;
 } */
 
-/*Header*/
+
+/*---------- Header ----------*/
 
 .weather-header{
     height: 21vh;
@@ -19,7 +19,7 @@
     font-size: 6rem;
 }
 
-/*Search area*/
+/*---------- Search area ----------*/
 
 aside {
     padding-top: 4.5rem;
@@ -50,25 +50,30 @@ aside {
     border: 0.1rem solid #d0d0d0;   
 }
 
-/*History area*/
+/*---------- History area ----------*/
 
 .city-buttons {
     width: 100%;
     height: 3rem;
-    border: 2px solid #d0d0d0;
-    background-color: #aeaeae;
+    border: 2px solid #e7e7e77e;
+    background-color: #e7e9eb;
     color: black;
     border-radius: 0.6rem;
     font-size: 1.9rem;
 
-    /* TODO: should be dynamically added in createCityBtn() */
-    
+    /* TODO: could be dynamically added in createCityBtn() */
     margin-bottom: 1.5rem;
     padding-top: 1rem;
     padding-bottom: 3.5rem;
+
 }
 
-/*Today's Section*/
+.city-buttons:hover{
+    background-color: whitesmoke;
+}
+  
+
+/*---------- Today's Section ----------*/
 
 #today{
     width: 100%;
@@ -118,6 +123,8 @@ aside {
     padding: 1rem;
 }
 
+
+/*---------- Media Queries ----------*/
 @media screen and (max-width: 412px){
     
     #today p,button {
