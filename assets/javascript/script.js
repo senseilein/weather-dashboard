@@ -1,3 +1,5 @@
+// ! TODO: Improve - if failed then inform user accordingly with a nice modal - replace current alert()
+
 const history = $("#history");
 const form = $("#search-form");
 const submitBtn = $("#search-button");
@@ -336,7 +338,6 @@ function getFiveDayForecast(forecastList) {
 }
 
 // *---------------------------------------- FUNCTION USED FOR API CALLS ----------------------------------------* //
-// ! TODO: Improve - if failed then inform user accordingly with a nice modal
 
 /**
  * * Call the Geocoding API and Collect the lat-lon coordinates of the user input city
