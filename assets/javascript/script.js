@@ -1,3 +1,5 @@
+// Detailed comments for myself
+
 // ! TODO: Improve - if failed then inform user accordingly with a nice modal - replace current alert()
 
 const history = $("#history");
@@ -11,7 +13,7 @@ forecastHeading.hide();
 const todaySection = $("#today");
 todaySection.hide();
 
-// *--------------------------------------------------- LOCAL STORAGE ---------------------------------------------------* //
+/* ---------------------------------------- LOCAL STORAGE ---------------------------------------- */
 
 function initLocalStorage() {
   // try and get the array from Local Storage
@@ -24,6 +26,8 @@ function initLocalStorage() {
 }
 
 //* function to render city-buttons for cities stored in local Storage when page is loaded
+//* this function use renderCityButtonFromLocalStorage(cityList, i) as a callback function
+
 function initCityList() {
   // we get the cityList array from local storage
   let cityList = JSON.parse(localStorage.getItem("cityList"));
@@ -39,6 +43,7 @@ initLocalStorage();
 
 initCityList();
 
+//* helper function for initCityList()
 function renderCityButtonFromLocalStorage(cityList, i) {
   const cityBtn = $("<button>").text(cityList[i]);
   cityBtn.addClass("city-buttons");
@@ -46,6 +51,8 @@ function renderCityButtonFromLocalStorage(cityList, i) {
   history.append(cityBtn);
 }
 
+//* function to add cities to cityList in local Storage based on input and limit number of cities to 6
+// function used in createCityBtn() (only once input is considered as valid)
 function updateLocalStorageWithNewCity(searchInput) {
   // get the array from local storage (with whatever it has inside)
   let cityList = JSON.parse(localStorage.getItem("cityList"));
@@ -64,6 +71,8 @@ function updateLocalStorageWithNewCity(searchInput) {
   localStorage.setItem("cityList", JSON.stringify(cityList));
 }
 
+/* ---------------------------------------- FUNCTIONS ---------------------------------------- */
+
 // *--------------------------------------------------- FUNCTIONS TO MODIFY AND POPULATE DOCUMENT ELEMENTS ---------------------------------------------------* //
 
 function getTodaysDate() {
@@ -72,19 +81,23 @@ function getTodaysDate() {
   return today;
 }
 
+//* function used for each day in createOneDivPerForecastDay()
 function getFutureDateFromToday(indexOfDay) {
   let today = moment();
   let futureDay = today.add(indexOfDay + 1, "days").format("DD/MM/YYYY");
   return futureDay;
 }
 
-// more details about weather icons > https://openweathermap.org/weather-conditions
+//* function used for each day in createOneDivPerForecastDay()
+//  more details about weather icons > https://openweathermap.org/weather-conditions
 function getWeatherIcon(day) {
   const iconCode = day.weather[0].icon;
   const imgURL = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
   return imgURL;
 }
 
+//* function used in displayFiveDayWeather() for each forecast day
+//  @return text to populate temp/humidity/wind paragraph in #forecast section
 function extractDataOfTheDayToPopulatePage(day) {
   let dataOfTheDay = [];
   dataOfTheDay.push(`Temp: ${day.main.temp}°C`);
@@ -94,6 +107,8 @@ function extractDataOfTheDayToPopulatePage(day) {
   return dataOfTheDay;
 }
 
+//* function used in displayFiveDayWeather() to populate .dayDiv and append them to the 5 day forecast section
+//  helper functions getFutureDateFromToday(indexOfDay) & getWeatherIcon(day)
 function createOneDivPerForecastDay(day, indexOfDay, dataOfTheDay) {
   const forecastSection = $("#forecast");
 
@@ -114,7 +129,7 @@ function createOneDivPerForecastDay(day, indexOfDay, dataOfTheDay) {
 }
 
 /**
- * * Extract data from response object and create elements to populate todaySection accordingly
+ * * Extract data from response object (called day here) and create elements to populate todaySection accordingly
  * @param day collected from current Weather API call (initiated when input submit button is fired)
  * function called within 2nd ajax().then() method in main function getCityWeather()
  * ? cases when call to API fails/ cityName is invalid / error occurs are managed directly in the ajax().then().cath() in getCityWeather() funtion
@@ -142,6 +157,13 @@ function displayTodayWeather(day, cityName) {
   todaySection.append(todayHeading, todayTemp, todayHumidity, todayWind);
 }
 
+/**
+ * * Extract data from response object (fiveDayForecast) and create elements to populate todaySection accordingly
+ * @param fiveDayForecast collected from 5-day-forecast API call
+ * function called within 2nd ajax().then() method in main function getCityWeather()
+ * ? cases when call to API fails/ cityName is invalid / error occurs are managed directly in the ajax().then().cath() in getCityWeather() funtion
+ * helper functions: extractDataOfTheDayToPopulatePage(day) & createOneDivPerForecastDay(day, index, dataOfTheDay)
+ */
 function displayFiveDayWeather(fiveDayForecast) {
   const forecastSection = $("#forecast");
   const forecastHeading = $("#forecast-heading");
@@ -158,6 +180,7 @@ function displayFiveDayWeather(fiveDayForecast) {
   });
 }
 
+// helper function in createCityBtn()
 function clearInputField() {
   const inputField = $("#search-input");
   inputField.val("");
@@ -165,6 +188,7 @@ function clearInputField() {
 
 // *--------------------------------------------------- FUNCTIONS TO CALL GEOCODING API ---------------------------------------------------* /
 
+// helper function for getCityNameFromInput()
 // * Valid inputs contain only letters and spaces (e.g. "Los Angeles" but NOT Los-Angeles)
 function checkInputValidity(searchInput) {
   // detailed Regex explanation available here > https://regex101.com/
@@ -213,10 +237,15 @@ function capitalizeCityName(input) {
   return capitalizeCityName.join(" ");
 }
 
+// if we were able to get a valid searchInput > we createCityBtn()
+// then updateLocalStorageWithNewCity(searchInput)
+// then we checkNumberOfCitiesInHistory() > if we have more than 6 cities, the oldest one is removed
+// and finally clearInputField()
+
 function createCityBtn() {
   const searchInput = getCityNameFromInput();
 
-  // get the array from local storage and check if the inputed city was already stored
+  // get the array from local storage and check if the inputed city was already looked up
   // if yes, exit the function and do not create a button (since it already exists)
   // if the searchInput is invalid, exit as well
   let cityList = JSON.parse(localStorage.getItem("cityList"));
@@ -230,10 +259,12 @@ function createCityBtn() {
   cityBtn.text(searchInput);
   history.append(cityBtn);
 
-  return searchInput;
+  updateLocalStorageWithNewCity(searchInput);
+  checkNumberOfCitiesInHistory();
+  clearInputField();
 }
 
-function keepOnlyLastSixCitiesInHistory() {
+function checkNumberOfCitiesInHistory() {
   const history = $("#history");
   const numOfChildren = history.children().length;
 
@@ -246,7 +277,7 @@ function keepOnlyLastSixCitiesInHistory() {
 
 /**
  * @return {string} geocodingQueryURL that will be used to call the API to retrieve lat&lon based on cityName
- * @param cityName will be passed from main function getCityWeather() where this function is called
+ * @param cityName will be passed from mother function getCityWeather()
  */
 function buildGeocodingQueryURL(cityName) {
   // ? create query URL(limit to 1 result)
@@ -255,11 +286,12 @@ function buildGeocodingQueryURL(cityName) {
 }
 
 // *---------------------------------------- FUNCTIONS TO CALL CURRENT WEATHER API ----------------------------------------* //
+// https://openweathermap.org/current
 
 /**
  * @return {string} currentWeatherQueryURL that will be used to call the current day weather API
  * @param currentCityCoordinates is the response from Geocoding API
- * any error will be caught and handled in main function getCityWeather()
+ * any error will be catch in "motherfunction" getCityWeather()
  */
 function buildTodayWeatherQueryURL(currentCityCoordinates) {
   //we're sending the response as currentCityCoordinates
@@ -273,7 +305,7 @@ function buildTodayWeatherQueryURL(currentCityCoordinates) {
 }
 
 // *---------------------------------------- FUNCTIONS TO CALL 5DAYS FORECAST API ----------------------------------------* //
-// 5-day forecast includes weather forecast data with 3-hour step > https://openweathermap.org/forecast5
+// 5-day forecast includes weather forecast data with 3-hour step (during 5days) > https://openweathermap.org/forecast5
 
 function buildFiveDayForecastQueryURL(currentCityCoordinates) {
   //we're sending the response as currentCityCoordinates
@@ -287,20 +319,23 @@ function buildFiveDayForecastQueryURL(currentCityCoordinates) {
 }
 
 /**
- * * Extract 1 fixed time slot per day (avoiding current day since this is handled by a different API)
+ * * Extract 1 fixed time slot per day (avoiding current day since this is handle by a different API)
  * @param forecastList is extracted from the response from 5-day-API call
- * @returns [fiveDayData] array of selected data for the next 5 days
+ * @returns [fiveDayData] array of data for next 5 days
  */
 function getFiveDayForecast(forecastList) {
   console.log(forecastList);
   let fiveDayData = [];
   for (let data = 0; data < forecastList.length - 1; data += 7) {
-    // skip current day since we already use current weather API for that
     if (data === 0) {
       continue;
     }
     fiveDayData.push(forecastList[data]);
   }
+
+  console.log("final");
+  console.log(fiveDayData);
+  console.log(fiveDayData[0]);
   return fiveDayData;
 }
 
@@ -319,12 +354,13 @@ function getCityWeather(cityName) {
     method: "GET",
   })
     .then(function (response) {
-      // get the lat&lon from response obj in order to build URL to call both current Weather API and 5 days forecast API
+      // get the lat&lon from response obj in order to build URL to call 2nd API to get today's weather
       let todayWeatherQueryURL = buildTodayWeatherQueryURL(response[0]);
 
-      let fiveDayForecastQueryURL = buildFiveDayForecastQueryURL(response[0]);
+      // get the lat&lon from response obj in order to build URL to call 5 days forecast API
+      let nextQueryURL = buildFiveDayForecastQueryURL(response[0]);
 
-      // call current Weather API
+      // call api using currentWeatherQueryURL
       $.ajax({
         url: todayWeatherQueryURL,
         method: "GET",
@@ -333,12 +369,14 @@ function getCityWeather(cityName) {
         extractDataOfTheDayToPopulatePage(day);
         displayTodayWeather(day, cityName);
 
-        // call 5-day-forecast API
+        //Pass it here in order to make it available in the next ajax()
+        let fiveDayForecastQueryURL = nextQueryURL;
+
         $.ajax({
           url: fiveDayForecastQueryURL,
           method: "GET",
         }).then(function (forecast) {
-          // the forecast.list is the bit we need to extract from the 5-day forecast response
+          // the forecast.list is the bit we need to extract from the forecast response
           let forecastList = forecast.list;
 
           let fiveDayForecast = getFiveDayForecast(forecastList);
@@ -346,18 +384,15 @@ function getCityWeather(cityName) {
           //Update webpage with weather data for the 5 days
           displayFiveDayWeather(fiveDayForecast);
 
-          //create a btn and update local storage only if no error occurs
-          const searchInput = createCityBtn();
-          updateLocalStorageWithNewCity(searchInput);
-          keepOnlyLastSixCitiesInHistory();
-          clearInputField();
+          //create a btn only if no error occurs
+          createCityBtn();
         });
       });
     })
     .catch(function (error) {
       console.log("ERROR", error);
       alert(
-        "Sorry, we were not able to retrieve the requested data.\nPlease check the spelling or try again later."
+        "Sorry, we were not able to retrieve the requested data. Please check the spelling or try again later."
       );
       return false;
     });
