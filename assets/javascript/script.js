@@ -16,10 +16,7 @@ todaySection.hide();
 /* ---------------------------------------- LOCAL STORAGE ---------------------------------------- */
 
 function initLocalStorage() {
-  // try and get the array from Local Storage
   let cityList = JSON.parse(localStorage.getItem("cityList"));
-
-  // if array doesn't exist, we create one and put it in the Local Storage
   if (!cityList) {
     localStorage.setItem("cityList", JSON.stringify([]));
   }
@@ -29,18 +26,15 @@ function initLocalStorage() {
 //* this function use renderCityButtonFromLocalStorage(cityList, i) as a callback function
 
 function initCityList() {
-  // we get the cityList array from local storage
   let cityList = JSON.parse(localStorage.getItem("cityList"));
 
-  // for each city, we render a button on the page
   for (let i = 0; i < cityList.length; i++) {
     renderCityButtonFromLocalStorage(cityList, i);
   }
 }
 
-//* We initialise local Storage immediately
+//* We initialise localStorage when the webpage is loaded
 initLocalStorage();
-
 initCityList();
 
 //* helper function for initCityList()
@@ -54,20 +48,16 @@ function renderCityButtonFromLocalStorage(cityList, i) {
 //* function to add cities to cityList in local Storage based on input and limit number of cities to 6
 // function used in createCityBtn() (only once input is considered as valid)
 function updateLocalStorageWithNewCity(searchInput) {
-  // get the array from local storage (with whatever it has inside)
   let cityList = JSON.parse(localStorage.getItem("cityList"));
 
-  // if searchInput doesn't already exists in the array, add the new city to the object
   if (!cityList.includes(searchInput)) {
     cityList.push(searchInput);
   }
 
-  // if cityList.length is > 5 , delete the first item in the list (oldest city)
   if (cityList.length > 6) {
     cityList.shift();
   }
 
-  // put the updated array back in the local storage
   localStorage.setItem("cityList", JSON.stringify(cityList));
 }
 
@@ -77,7 +67,6 @@ function updateLocalStorageWithNewCity(searchInput) {
 
 function getTodaysDate() {
   let today = moment().format("DD/MM/YYYY");
-  console.log({ today });
   return today;
 }
 
@@ -103,7 +92,6 @@ function extractDataOfTheDayToPopulatePage(day) {
   dataOfTheDay.push(`Temp: ${day.main.temp}°C`);
   dataOfTheDay.push(`Humidity: ${day.main.humidity}%`);
   dataOfTheDay.push(`Wind: ${day.wind.speed} KPH`);
-  console.log(dataOfTheDay);
   return dataOfTheDay;
 }
 
@@ -203,15 +191,13 @@ function checkInputValidity(searchInput) {
   if (searchInput.match(authorizedChar)) {
     return true;
   }
-
-  // if the above is not true, it mmeans it includes some special characters > invalid
   return false;
 }
 
 /**
  * * first checkInputValidity(searchInput)then if valid,
  * @return capitalizeCityName(searchInput)
- * or empty "" (in this case no button will be create, no API call will be made and nothing will be added to local Storage)
+ * or empty "" (in this case no button will be created, no API call will be made and nothing will be added to local Storage)
  */
 function getCityNameFromInput() {
   const searchInput = $("#search-input").val().trim();
@@ -229,9 +215,9 @@ function capitalizeCityName(input) {
 
   let capitalizeCityName = cityName.map((word) => {
     const firstLetter = word[0].toUpperCase();
-    console.log(firstLetter);
+
     const restOfWord = word.substring(1).toLowerCase();
-    console.log(restOfWord);
+
     return firstLetter + restOfWord;
   });
   return capitalizeCityName.join(" ");
@@ -324,7 +310,6 @@ function buildFiveDayForecastQueryURL(currentCityCoordinates) {
  * @returns [fiveDayData] array of data for next 5 days
  */
 function getFiveDayForecast(forecastList) {
-  console.log(forecastList);
   let fiveDayData = [];
   for (let data = 0; data < forecastList.length - 1; data += 7) {
     if (data === 0) {
@@ -333,9 +318,6 @@ function getFiveDayForecast(forecastList) {
     fiveDayData.push(forecastList[data]);
   }
 
-  console.log("final");
-  console.log(fiveDayData);
-  console.log(fiveDayData[0]);
   return fiveDayData;
 }
 
@@ -390,7 +372,7 @@ function getCityWeather(cityName) {
       });
     })
     .catch(function (error) {
-      console.log("ERROR", error);
+      console.error("ERROR", error);
       alert(
         "Sorry, we were not able to retrieve the requested data. Please check the spelling or try again later."
       );
