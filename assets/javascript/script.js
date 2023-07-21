@@ -1,5 +1,3 @@
-// Detailed comments for myself
-
 // ! TODO: Improve - if failed then inform user accordingly with a nice modal - replace current alert()
 
 const history = $("#history");
